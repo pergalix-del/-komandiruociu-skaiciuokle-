@@ -1,0 +1,40 @@
+{
+  "act": "Lietuvos Respublikos Vyriausybės 2004-04-29 nutarimas Nr. 526 „Dėl dienpinigių ir kitų komandiruočių išlaidų apmokėjimo“",
+  "sourceUrl": "https://www.e-tar.lt/portal/lt/legalAct/TAR.E356C85AC1C6/asr",
+  "params": {
+    "diemNorm": 28,
+    "hotelNorm": 145,
+    "oneDayDiem": false,
+    "shortDayHours": 4,
+    "shortDayRate": 0.2,
+    "minCollective": 0.5,
+    "minLocal7": 0.65
+  },
+  "edition": {
+    "id": "MNBsDSzqze",
+    "validFrom": "2026-10-01",
+    "validTo": "2027-06-30"
+  },
+  "upcoming": {
+    "validFrom": "2027-07-01",
+    "params": {},
+    "note": "įsigalios nauja nutarimo redakcija (netenka galios 2.11 punktas dėl pirmininkavimo ES Tarybai), komandiruočių Lietuvoje taisyklių ji nekeičia."
+  },
+  "drafts": null,
+  "needsReview": false,
+  "note": "",
+  "checkedAt": "2026-10-12T08:58:30+03:00",
+  "etar": {
+    "editionCount": 27,
+    "newestEditionId": "ShSXRZiQmV",
+    "newestEditionFrom": "2027-07-01",
+    "lastAmendment": "2026-07-01 Nr. 518",
+    "drafts": "Nėra"
+  },
+  "log": [
+    {
+      "date": "2026-10-08",
+      "entry": "Pradžia: galiojanti redakcija nuo 2026-10-01 (pakeitimas 2026-07-01 Nr. 518); Lietuvoje dienpinigių norma 28 €, nakvynės norma 145 €, už vienos dienos komandiruotes dienpinigiai nemokami."
+    }
+  ]
+}
