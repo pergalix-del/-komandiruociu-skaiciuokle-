@@ -1,7 +1,7 @@
 // Komandiruotės skaičiuoklės nustatymai (savarankiška versija).
 // Pakeitę failą GitHub svetainėje (pieštuko ženklas → Commit changes), po minutės perkraukite skaičiuoklę.
 window.KS_CONFIG = {
-  // TomTom API raktai: ['breS2lxFk5ktNhI0V95qpfaCaTInVXTN', 'breS2lxFk5ktNhI0V95qpfaCaTInVXTN'].
+  // TomTom API raktai: ['breS2lxFk5ktNhI0V95qpfaCaTInVXTN', 'GLCx8mCLs7Ukze0S7hPGNfm88Z1QRNd1'].
   // Kai pagrindinio rakto mėnesio limitas baigiasi, skaičiuoklė pati pereina prie antrojo, o kitą mėnesį grįžta.
   // Palikus '' – kiekvienas darbuotojas raktą galės įrašyti pats skaičiuoklėje (išsaugomas tik jo naršyklėje).
   tomtomKeys: ['', ''],
