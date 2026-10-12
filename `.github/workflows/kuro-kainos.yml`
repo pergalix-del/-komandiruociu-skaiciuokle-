@@ -1,0 +1,48 @@
+# LEA vidutinės degalų kainos skaičiuoklei: darbo dienomis 10:01 Vilniaus laiku,
+# pakartotinai iki 13 val., jei LEA pranešimas vėluoja (jau įrašius kainas kiti paleidimai nieko nedaro).
+name: LEA kuro kainos
+
+on:
+  schedule:
+    - cron: '1 10 * * 1-5'
+      timezone: 'Europe/Vilnius'
+    - cron: '31 10 * * 1-5'
+      timezone: 'Europe/Vilnius'
+    - cron: '7 11 * * 1-5'
+      timezone: 'Europe/Vilnius'
+    - cron: '7 12 * * 1-5'
+      timezone: 'Europe/Vilnius'
+    - cron: '7 13 * * 1-5'
+      timezone: 'Europe/Vilnius'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: duomenu-atnaujinimas
+  cancel-in-progress: false
+
+jobs:
+  kainos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Paimti LEA kainas
+        run: node scripts/update-fuel.mjs
+      - name: Įrašyti pakeitimus
+        run: |
+          git add data/fuel.json
+          if git diff --cached --quiet; then
+            echo "Kainos nepasikeitė."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "LEA kuro kainos $(TZ=Europe/Vilnius date +%F)"
+          git pull --rebase
+          git push
