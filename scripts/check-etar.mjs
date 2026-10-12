@@ -3,10 +3,11 @@
 // Kasdien palygina e-TAR redakcijų sąrašą su paskutine patikra. Jei atsirado nauja redakcija – rules.json
 // pažymima „needsReview“ (skaičiuoklė rodo įspėjimą) ir sukuriamas GitHub pranešimas (issue): dienpinigių ir
 // nakvynės normas tada patikrina ir, jei reikia, pakeičia žmogus. Jau priimtas pakeitimas (upcoming) įsigalioja
-// pats nurodytą dieną.
+// pats nurodytą dieną. Jei e-TAR neatsako ar atmeta užklausą, tai užrašoma ir bandoma kitą dieną; el. laiškas
+// siunčiamas tik kartą per savaitę (pirmadieniais), kai sėkmingos patikros nebuvo dvi savaites.
 import {readFile, writeFile, appendFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
-import {vilniusNow, htmlToText, getPage, fail} from './lib.mjs';
+import {vilniusNow, htmlToText, getPage, fail, daysBetween, weekday} from './lib.mjs';
 
 const ACT = 'TAR.E356C85AC1C6';
 const EDITIONS = `https://www.e-tar.lt/portal/lt/legalActEditions/${ACT}`;
@@ -21,14 +22,44 @@ export function parseEditions(html) {
   return {ids, froms};
 }
 
+// anksčiau priimtas pakeitimas įsigalioja pats
+function applyUpcoming(rules, today, idFor) {
+  const up = rules.upcoming;
+  if (!(up && up.validFrom && up.validFrom <= today)) return;
+  rules.params = {...rules.params, ...(up.params || {})};
+  rules.edition = {id: (idFor && idFor(up.validFrom)) || null, validFrom: up.validFrom, validTo: null};
+  rules.upcoming = null;
+  rules.log = Array.isArray(rules.log) ? rules.log : [];
+  rules.log.unshift({date: today, entry: `Įsigaliojo redakcija nuo ${up.validFrom}${up.note ? ': ' + up.note : ''}`});
+}
+
+// e-TAR neatsakė ar atmetė užklausą: užrašoma, skaičiuoklė (po kelių dienų) tai parodo, bandoma rytoj
+async function unreachable(rules, now, problem) {
+  const today = now.date;
+  rules.etar = {...(rules.etar || {}), lastError: String(problem).slice(0, 200), lastErrorAt: now.iso};
+  rules.checkProblem = 'automatinė e-TAR patikra šiuo metu nepavyksta – nutarimo pakeitimus kartais patikrinkite e-TAR';
+  applyUpcoming(rules, today, null);
+  await writeFile(FILE, JSON.stringify(rules, null, 2) + '\n');
+  const last = String(rules.checkedAt || '').slice(0, 10);
+  const age = /^\d{4}-\d{2}-\d{2}$/.test(last) ? daysBetween(last, today) : Infinity;
+  const msg = `e-TAR patikrinti nepavyko (${problem}). Paskutinė sėkminga patikra: ${last || 'nebuvo'}.`;
+  if (age >= 14 && weekday(today) === 1) fail(`${msg} Jau dvi savaitės be patikros – nutarimą patikrinkite e-TAR rankiniu būdu: ${ACT_PAGE}`);
+  console.log(`::warning::${msg} Bus bandoma rytoj.`);
+}
+
 export async function main() {
   const now = vilniusNow();
   const today = now.date;
   const rules = JSON.parse(await readFile(FILE, 'utf8'));
-  const page = await getPage(EDITIONS);
-  if (!page) fail(`e-TAR redakcijų puslapis nerastas: ${EDITIONS}`);
+  let page = null;
+  try {
+    page = await getPage(EDITIONS);
+  } catch (e) {
+    return unreachable(rules, now, e.message.replace(`${EDITIONS}: `, ''));
+  }
+  if (!page) return unreachable(rules, now, 'redakcijų puslapis nerastas');
   const {ids, froms} = parseEditions(page.html);
-  if (!ids.length || !froms.length) fail(`e-TAR redakcijų sąrašo perskaityti nepavyko (${EDITIONS}) – galbūt pasikeitė puslapis. Nieko nepakeista.`);
+  if (!ids.length || !froms.length) return unreachable(rules, now, 'redakcijų sąrašo perskaityti nepavyko – galbūt pasikeitė puslapis');
 
   const paired = ids.length === froms.length;
   const fromOf = id => paired ? froms[ids.indexOf(id)] : null;
@@ -43,19 +74,12 @@ export async function main() {
   if (!known && changed) added.push(newestId);
   const what = added.map(id => `${id}${fromOf(id) ? ' (nuo ' + fromOf(id) + ')' : ''}`).join(', ');
 
-  rules.etar = {...before, editionCount: ids.length, newestEditionId: newestId, newestEditionFrom: newestFrom, knownIds: ids};
+  const {lastError, lastErrorAt, ...etar} = before;
+  rules.etar = {...etar, editionCount: ids.length, newestEditionId: newestId, newestEditionFrom: newestFrom, knownIds: ids};
   rules.checkedAt = now.iso;
+  delete rules.checkProblem;
   rules.log = Array.isArray(rules.log) ? rules.log : [];
-
-  // anksčiau priimtas pakeitimas įsigalioja pats
-  const up = rules.upcoming;
-  if (up && up.validFrom && up.validFrom <= today) {
-    rules.params = {...rules.params, ...(up.params || {})};
-    const id = paired ? ids[froms.indexOf(up.validFrom)] : undefined;
-    rules.edition = {id: id || null, validFrom: up.validFrom, validTo: null};
-    rules.upcoming = null;
-    rules.log.unshift({date: today, entry: `Įsigaliojo redakcija nuo ${up.validFrom}${up.note ? ': ' + up.note : ''}`});
-  }
+  applyUpcoming(rules, today, from => paired ? ids[froms.indexOf(from)] : null);
 
   if (changed) {
     rules.needsReview = true;

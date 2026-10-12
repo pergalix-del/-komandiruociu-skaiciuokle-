@@ -47,12 +47,18 @@ const FIXED = ['01-01', '02-16', '03-11', '05-01', '06-24', '07-06', '08-15', '1
 export const isHoliday = s => FIXED.includes(s.slice(5)) || s === addDays(easter(Number(s.slice(0, 4))), 1);
 export const isWorkday = s => { const w = parse(s).getUTCDay(); return w !== 0 && w !== 6 && !isHoliday(s); };
 
-// Puslapio tekstas ir galutinis adresas (po peradresavimų); null, kai puslapio nėra
+export const daysBetween = (a, b) => Math.round((parse(b) - parse(a)) / 864e5);
+export const weekday = s => parse(s).getUTCDay();   // 0 – sekmadienis, 1 – pirmadienis
+
+// Puslapio tekstas ir galutinis adresas (po peradresavimų); null, kai puslapio nėra.
+// Užklausa atrodo kaip įprastos naršyklės – kai kurios valstybės svetainės kitokias atmeta.
+const HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+  'Accept-Language': 'lt-LT,lt;q=0.9,en;q=0.7'
+};
 export async function getPage(url) {
-  const r = await fetch(url, {
-    redirect: 'follow',
-    headers: {'User-Agent': 'Mozilla/5.0 (compatible; komandiruociu-skaiciuokle/1.0; +https://github.com)', 'Accept-Language': 'lt,en;q=0.7'}
-  });
+  const r = await fetch(url, {redirect: 'follow', headers: HEADERS, signal: AbortSignal.timeout(30000)});
   if (r.status === 404 || r.status === 410) return null;
   if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
   return {url: r.url || url, html: await r.text()};

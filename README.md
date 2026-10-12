@@ -59,10 +59,10 @@ Užsiregistruokite [github.com/signup](https://github.com/signup), geriausia įs
 ### 5. Automatinio atnaujinimo patikra
 
 1. Atidarykite skirtuką **Actions**. Jei GitHub paprašys, spauskite *I understand my workflows, go ahead and enable them*.
-2. Kairėje pasirinkite **LEA kuro kainos** → **Run workflow** → **Run workflow**. Po minutės turėtų atsirasti žalia varnelė.
-3. Tą patį padarykite su **Nutarimo Nr. 526 patikra**.
+2. Kairėje pasirinkite **LEA kuro kainos** → **Run workflow**. Pažymėkite **Tik patikrinti, ar LEA kainos nuskaitomos** ir spauskite **Run workflow**. Po minutės turėtų atsirasti žalia varnelė, o užduoties žurnale – eilutė „Patikra pavyko: … dyzelinas …“.
+3. Tą patį (be žymėjimo) padarykite su **Nutarimo Nr. 526 patikra**. Žurnale turėtų būti „Pokyčių nėra: … redakcijos …“.
 
-LEA kainas skelbia tik darbo dienomis iki 10 val. Paleidus savaitgalį, scenarijus tiesiog parašys, kad šiandien kainų nėra.
+Paleidus be žymėjimo, kainų užduotis įrašo tik šiandienos kainas. Jei jos jau įrašytos, ji tiek ir parašo. LEA kainas skelbia tik darbo dienomis iki 10 val.
 
 ### 6. TomTom (nebūtina)
 
@@ -90,6 +90,7 @@ Jei raktų neįrašysite, kiekvienas darbuotojas galės įrašyti savo raktą sk
 
 - Tikrinamas kasdien 08:57.
 - Atsiradus naujai redakcijai, skaičiuoklė rodo įspėjimą, o skiltyje **Issues** atsiranda pranešimas (gausite el. laišką).
+- Jei e-TAR neatsako ar atmeta užklausą (pvz., „HTTP 403“), užduotis baigiasi su geltonu įspėjimu ir bandoma kitą dieną. Po kelių nesėkmingų dienų skaičiuoklė parodo, kad automatinė patikra nepavyksta. El. laiškas siunčiamas tik pirmadieniais ir tik tada, kai sėkmingos patikros nebuvo dvi savaites.
 
 ## Ką daryti, kai pasikeičia nutarimas Nr. 526
 

@@ -1815,7 +1815,8 @@ Core.Route = (() => {
       params: readParams(d.params, RULE_DEFAULTS), live: true,
       editionFrom: d.edition && okDate(d.edition.validFrom) ? d.edition.validFrom : rules.editionFrom,
       checkedAt: str(d.checkedAt, 40) || null,
-      needsReview: d.needsReview === true, note: str(d.note, 600), drafts: str(d.drafts, 400) || null, upcoming: null
+      needsReview: d.needsReview === true, note: str(d.note, 600), drafts: str(d.drafts, 400) || null, upcoming: null,
+      checkProblem: str(d.checkProblem, 300)
     };
     const u = d.upcoming;
     if (u && typeof u === 'object' && okDate(u.validFrom)) r.upcoming = {validFrom: u.validFrom, params: u.params && typeof u.params === 'object' ? u.params : {}, note: str(u.note, 400)};
@@ -1849,7 +1850,7 @@ Core.Route = (() => {
     st.classList.toggle('warn', late);
     const off = !rules.live && (dbState === 'nodb' || dbState === 'fail');
     st.classList.toggle('warn', late || off);
-    st.textContent = 'Galiojanti redakcija nuo ' + rules.editionFrom + (checked ? ' · e-TAR patikrinta ' + checked : '') + (late ? ' – patikra seniai nevyko' : '') +
+    st.textContent = 'Galiojanti redakcija nuo ' + rules.editionFrom + (checked ? ' · e-TAR patikrinta ' + checked : '') + (late ? ' – ' + (rules.checkProblem ? rules.checkProblem.replace(/\.$/, '') : 'patikra seniai nevyko') : '') +
       (off ? ' (išsaugota puslapyje – ' + (dbState === 'nodb' ? 'šiame lange naujausių duomenų gauti negalima)' : 'naujausių duomenų gauti nepavyko)') : '');
 
     const parts = [];
