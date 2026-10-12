@@ -29,12 +29,15 @@
     "newestEditionId": "ShSXRZiQmV",
     "newestEditionFrom": "2027-07-01",
     "lastAmendment": "2026-07-01 Nr. 518",
-    "drafts": "Nėra"
+    "drafts": "Nėra",
+    "lastError": "HTTP 403",
+    "lastErrorAt": "2026-10-12T17:32:08+03:00"
   },
   "log": [
     {
       "date": "2026-10-08",
       "entry": "Pradžia: galiojanti redakcija nuo 2026-10-01 (pakeitimas 2026-07-01 Nr. 518); Lietuvoje dienpinigių norma 28 €, nakvynės norma 145 €, už vienos dienos komandiruotes dienpinigiai nemokami."
     }
-  ]
+  ],
+  "checkProblem": "automatinė e-TAR patikra šiuo metu nepavyksta – nutarimo pakeitimus kartais patikrinkite e-TAR"
 }
