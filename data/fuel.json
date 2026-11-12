@@ -1,17 +1,22 @@
 {
-  "date": "2026-11-11",
-  "diesel": 2.205,
-  "petrol95": 1.815,
-  "lpg": 1.028,
+  "date": "2026-11-12",
+  "diesel": 2.185,
+  "petrol95": 1.786,
+  "lpg": 1.032,
   "source": "Lietuvos energetikos agentūra",
-  "sourceUrl": "https://www.ena.lt/Naujiena/kdk-20261111/",
-  "updatedAt": "2026-11-11T17:55:31+02:00",
+  "sourceUrl": "https://www.ena.lt/Naujiena/kdk-20261112/",
+  "updatedAt": "2026-11-12T18:38:38+02:00",
   "prev": {
-    "date": "2026-11-10",
-    "diesel": 2.238,
-    "petrol95": 1.861
+    "date": "2026-11-11",
+    "diesel": 2.205,
+    "petrol95": 1.815
   },
   "history": [
+    {
+      "date": "2026-11-12",
+      "diesel": 2.185,
+      "petrol95": 1.786
+    },
     {
       "date": "2026-11-11",
       "diesel": 2.205,
